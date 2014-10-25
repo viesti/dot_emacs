@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ag-highlight-search t)
- '(ag-reuse-buffers nil t)
+ '(ag-reuse-buffers nil)
  '(ag-reuse-window nil)
  '(auto-revert-interval 2)
  '(calendar-mark-diary-entries-flag t)
@@ -13,7 +13,7 @@
  '(cider-history-file "~/.emacs.d/nrepl-history.log")
  '(cider-popup-on-error nil)
  '(cider-popup-stacktraces nil)
- '(cider-repl-history-file "~/.emacs.d/nrepl-history.log" t)
+ '(cider-repl-history-file "~/.emacs.d/nrepl-history.log")
  '(cider-show-error-buffer nil)
  '(column-number-mode t)
  '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
@@ -29,7 +29,8 @@
  '(inferior-lisp-program "sbcl")
  '(inhibit-startup-screen t)
  '(jedi:install-imenu nil)
- '(js-indent-level 4)
+ '(js-indent-level 2)
+ '(js2-basic-offset 2)
  '(large-file-warning-threshold nil)
  '(mac-font-panel-mode nil)
  '(mark-diary-entries-in-calendar t)
@@ -53,11 +54,22 @@
  '(transient-mark-mode t)
  '(view-diary-entries-initially t))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(font-lock-keyword-face ((((class color) (min-colors 8)) (:foreground "magenta" :weight bold))))
+ '(idle-highlight ((t (:underline t :weight bold)))))
+
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
 ;; Delete whole line
-(defun delete-whole-line( ) (interactive) (beginning-of-line) (kill-line))
+(defun delete-whole-line ()
+  (interactive)
+  (beginning-of-line)
+  (kill-line))
 ;; Delete also \n
 (setq kill-whole-line t)
 ;; Replace forward-delete-char with kill-whole-line
@@ -67,15 +79,6 @@
 (autoload 'groovy-mode "groovy-mode" "Groovy editing mode." t)
 (add-to-list 'auto-mode-alist '("\.groovy$" . groovy-mode))
 (add-to-list 'interpreter-mode-alist '("groovy" . groovy-mode))
-
-;; (load-file "/usr/local/share/emacs/site-lisp/dvc/dvc-load.el")
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(font-lock-keyword-face ((((class color) (min-colors 8)) (:foreground "magenta" :weight bold))))
- '(idle-highlight ((t (:underline t :weight bold)))))
 
 (add-hook 'c-mode-hook 'imenu-add-menubar-index)
 (add-hook 'c++-mode-hook 'imenu-add-menubar-index)
@@ -94,16 +97,55 @@
 
 ;; to setup tabs, from: http://emacsblog.org/2007/09/30/quick-tip-spaces-instead-of-tabs/
 (setq c-basic-indent 2)
-(setq tab-width 4)
 (setq indent-tabs-mode nil)
 (setq-default indent-tabs-mode nil)
 
-;(setq load-path (cons "/usr/local/share/gtags" load-path))
-;(autoload 'gtags-mode "gtags" "" t)
-
-(add-to-list 'load-path "/Users/viesti/.emacs.d/ghc-mod")
+(add-to-list 'load-path "/Users/kimmoko/.cabal/share/x86_64-osx-ghc-7.8.3/ghc-mod-5.1.1.0")
 (autoload 'ghc-init "ghc" nil t)
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+
+(defun clojure-config ()
+  "Clojure configuration"
+  (require 'clojure-mode)
+  (require 'ac-cider-compliment)
+  (add-hook 'clojure-mode-hook 'smartparens-mode)
+  (add-hook 'clojure-mode-hook 'linum-mode)
+  (add-hook 'clojure-mode-hook 'highlight-parentheses-mode)
+  (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+  (add-hook 'cider-mode-hook 'ac-cider-compliment-setup)
+  (defun set-auto-complete-as-completion-at-point-function ()
+    (setq completion-at-point-functions '(auto-complete)))
+  (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+  (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
+  (setq cider-repl-history-file "~/.emacs.d/nrepl-history.log")
+  (add-hook 'cider-repl-mode-hook 'company-mode)
+  (add-hook 'cider-mode-hook 'company-mode)
+  (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'cider-repl-mode-hook 'subword-mode)
+  (add-hook 'cider-repl-mode-hook 'smartparens-mode)
+  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+  (define-clojure-indent
+    ;; compojure
+    (defroutes 'defun)
+    (GET 2)
+    (POST 2)
+    (PUT 2)
+    (DELETE 2)
+    (HEAD 2)
+    (ANY 2)
+    (context 2)
+    ;; litmus
+    (describe 'defun)
+    (given 'defun)
+    (then 'defun)
+    (before 'defun)
+    (before! 'defun)
+    (after 'defun)
+    ;; midje
+    (tabular 'defun)
+    ;; jayq
+    (let-ajax 'defun)))
 
 (when (> emacs-major-version 23)
   (require 'package)
@@ -114,6 +156,7 @@
   (add-to-list 'package-archives
                '("melpa" . "http://melpa.milkbox.net/packages/")
                'APPEND)
+
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-env "JAVA_HOME"))
@@ -121,58 +164,34 @@
     (load-theme 'deeper-blue t))
   (setq ring-bell-function #'ignore)
   (require 'switch-window)
+
   (require 'highlight-symbol)
   (global-set-key [f3] 'highlight-symbol-at-point)
   (global-set-key [(shift f3)] 'highlight-symbol-next)
   (global-set-key [(meta f3)] 'highlight-symbol-prev)
-  (add-to-list 'auto-mode-alist '("\.cljs$" . clojure-mode))
+
   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-  (add-hook 'clojure-mode-hook 'paredit-mode)
   (add-hook 'newlisp-mode-hook 'paredit-mode)
   (add-hook 'comint-mode-hook (lambda ()
                                 (when (equal (buffer-name) "*newlisp*")
                                   (paredit-mode 1))))
-  (add-hook 'clojure-mode-hook 'linum-mode)
   (add-hook 'python-mode-hook 'linum-mode)
   (add-hook 'c++-mode-hook 'linum-mode)
   (add-hook 'c-mode-hook 'linum-mode)
   (add-hook 'js-mode-hook 'linum-mode)
-  (add-hook 'cider-repl-mode-hook 'paredit-mode)
+  (add-hook 'js2-mode-hook 'linum-mode)
   (require 'flymake-jshint)
   (add-hook 'js-mode-hook 'flymake-mode)
-  (setq cider-repl-history-file "~/.emacs.d/nrepl-history.log")
   (setq nrepl-buffer-name-show-port t)
   (require 'iedit)
   (require 'auto-complete-config)
   (ac-config-default)
-  (require 'ac-cider-compliment)
-  (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-  (add-hook 'cider-mode-hook 'ac-cider-compliment-setup)
-  (eval-after-load "auto-complete"
-    '(add-to-list 'ac-modes 'cider-mode))
-  (defun set-auto-complete-as-completion-at-point-function ()
-    (setq completion-at-point-functions '(auto-complete)))
-  (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-  (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
-  ;; (define-key nrepl-interaction-mode-map (kbd "C-c C-d")
-  ;;   'ac-cider-compliment-popup-doc)
-
-  ;(require 'ac-cider)
-  ;(add-hook 'cider-repl-mode-hook 'ac-cider-setup)
-  ;(add-hook 'cider-mode-hook 'ac-cider-setup)
-  ;; (eval-after-load 'cider
-  ;;   '(define-key cider-mode-map (kbd "C-c C-d") 'ac-cider-popup-doc))
-  ;; (eval-after-load "auto-complete"
-  ;;   '(add-to-list 'ac-modes 'cider-repl-mode))
   (load-library "command-t")
   (global-set-key (kbd "M-z") 'er/expand-region)
   (delete-selection-mode 1)
   (global-set-key (kbd "<f5>") 'ag-project)
   (global-set-key (kbd "<f6>") 'ag-regexp-project-at-point)
   (menu-bar-mode 1)
-  ;(require 'cycbuf)
-  ;(global-set-key [(meta right)] 'cycbuf-switch-to-next-buffer)
-  ;(global-set-key [(meta left)]  'cycbuf-switch-to-previous-buffer)
   (require 'sr-speedbar)
   (global-set-key (kbd "s-b") 'sr-speedbar-toggle)
   (global-set-key (kbd "<C-s-up>")     'buf-move-up)
@@ -191,35 +210,12 @@
             (lambda ()
               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
                 (ggtags-mode 1))))
-  (require 'clojure-mode)
+  (add-hook 'js2-mode 'linum-mode)
+  (require 'smartparens-config)
   (require 'rainbow-delimiters)
-  (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'cider-repl-mode-hook 'subword-mode)
-  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+  (clojure-config)
   (add-hook 'c++-mode-hook (lambda () (smartparens-mode 1)))
   (add-hook 'c-mode-hook (lambda () (smartparens-mode 1)))
-  (define-clojure-indent
-    ; compojure
-    (defroutes 'defun)
-    (GET 2)
-    (POST 2)
-    (PUT 2)
-    (DELETE 2)
-    (HEAD 2)
-    (ANY 2)
-    (context 2)
-    ; litmus
-    (describe 'defun)
-    (given 'defun)
-    (then 'defun)
-    (before 'defun)
-    (before! 'defun)
-    (after 'defun)
-    ;midje
-    (tabular 'defun)
-    ; jayq
-    (let-ajax 'defun))
   (setq ag-reuse-buffers 't)
   (require 'git-gutter-fringe)
   (require 'project-explorer)
@@ -233,7 +229,7 @@
   (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
   (add-hook 'haskell-mode-hook 'haskell-indent-mode)
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-)
+  (require 'highlight-parentheses))
 
 (setq ispell-program-name "aspell"
       ispell-dictionary "finnish"
@@ -367,5 +363,4 @@
                             (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
                             (local-set-key "\C-cb" 'js-send-buffer)
                             (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
-                            (local-set-key "\C-cl" 'js-load-file-and-go)
-                            ))
+                            (local-set-key "\C-cl" 'js-load-file-and-go)))
