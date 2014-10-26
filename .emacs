@@ -3,8 +3,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ac-modes (quote (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode agda-mode agda2-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode ts-mode sclang-mode verilog-mode qml-mode)))
  '(ag-highlight-search t)
- '(ag-reuse-buffers nil)
+ '(ag-reuse-buffers nil t)
  '(ag-reuse-window nil)
  '(auto-revert-interval 2)
  '(calendar-mark-diary-entries-flag t)
@@ -13,7 +14,7 @@
  '(cider-history-file "~/.emacs.d/nrepl-history.log")
  '(cider-popup-on-error nil)
  '(cider-popup-stacktraces nil)
- '(cider-repl-history-file "~/.emacs.d/nrepl-history.log")
+ '(cider-repl-history-file "~/.emacs.d/nrepl-history.log" t)
  '(cider-show-error-buffer nil)
  '(column-number-mode t)
  '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
@@ -107,24 +108,19 @@
 (defun clojure-config ()
   "Clojure configuration"
   (require 'clojure-mode)
-  (require 'ac-cider-compliment)
-  (add-hook 'clojure-mode-hook 'smartparens-mode)
+
   (add-hook 'clojure-mode-hook 'linum-mode)
-  (add-hook 'clojure-mode-hook 'highlight-parentheses-mode)
-  (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-  (add-hook 'cider-mode-hook 'ac-cider-compliment-setup)
-  (defun set-auto-complete-as-completion-at-point-function ()
-    (setq completion-at-point-functions '(auto-complete)))
-  (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-  (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
-  (setq cider-repl-history-file "~/.emacs.d/nrepl-history.log")
-  (add-hook 'cider-repl-mode-hook 'company-mode)
   (add-hook 'cider-mode-hook 'company-mode)
-  (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'cider-repl-mode-hook 'subword-mode)
-  (add-hook 'cider-repl-mode-hook 'smartparens-mode)
   (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+  (add-hook 'cider-mode-hook 'highlight-parentheses-mode)
+  (add-hook 'cider-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'cider-repl-mode-hook 'company-mode)
+  (add-hook 'cider-repl-mode-hook 'subword-mode)
+  (add-hook 'cider-repl-mode-hook 'paredit-mode)
+
+  (setq nrepl-buffer-name-show-port t)
+  (setq cider-prompt-save-file-on-load nil)
+  (setq cider-repl-history-file "~/.emacs.d/nrepl-history.log")
   (define-clojure-indent
     ;; compojure
     (defroutes 'defun)
@@ -182,7 +178,6 @@
   (add-hook 'js2-mode-hook 'linum-mode)
   (require 'flymake-jshint)
   (add-hook 'js-mode-hook 'flymake-mode)
-  (setq nrepl-buffer-name-show-port t)
   (require 'iedit)
   (require 'auto-complete-config)
   (ac-config-default)
