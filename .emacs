@@ -5,17 +5,16 @@
  ;; If there is more than one, they won't work right.
  '(ac-modes (quote (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode agda-mode agda2-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode ts-mode sclang-mode verilog-mode qml-mode)))
  '(ag-highlight-search t)
- '(ag-reuse-buffers nil t)
+ '(ag-reuse-buffers t)
  '(ag-reuse-window nil)
  '(auto-revert-interval 2)
  '(calendar-mark-diary-entries-flag t)
  '(calendar-view-diary-initially-flag t)
  '(calendar-week-start-day 1)
- '(cider-history-file "~/.emacs.d/nrepl-history.log")
- '(cider-popup-on-error nil)
- '(cider-popup-stacktraces nil)
- '(cider-repl-history-file "~/.emacs.d/nrepl-history.log" t)
- '(cider-show-error-buffer nil)
+ '(cider-popup-on-error t)
+ '(cider-popup-stacktraces t)
+ '(cider-repl-history-file "~/.emacs.d/nrepl-history.log")
+ '(cider-show-error-buffer t)
  '(column-number-mode t)
  '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
  '(ecb-options-version "2.40")
@@ -34,6 +33,7 @@
  '(js2-basic-offset 2)
  '(large-file-warning-threshold nil)
  '(mac-font-panel-mode nil)
+ '(magit-use-overlays t)
  '(mark-diary-entries-in-calendar t)
  '(mouse-drag-copy-region t)
  '(mouse-wheel-mode t nil (mwheel))
@@ -61,7 +61,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(font-lock-keyword-face ((((class color) (min-colors 8)) (:foreground "magenta" :weight bold))))
- '(idle-highlight ((t (:underline t :weight bold)))))
+ '(idle-highlight ((t (:underline t :weight bold))))
+ '(magit-item-highlight ((t nil))))
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
@@ -120,7 +121,6 @@
 
   (setq nrepl-buffer-name-show-port t)
   (setq cider-prompt-save-file-on-load nil)
-  (setq cider-repl-history-file "~/.emacs.d/nrepl-history.log")
   (define-clojure-indent
     ;; compojure
     (defroutes 'defun)
@@ -131,6 +131,9 @@
     (HEAD 2)
     (ANY 2)
     (context 2)
+    ;; compojure-api
+    (GET* 2)
+    (POST* 2)
     ;; litmus
     (describe 'defun)
     (given 'defun)
@@ -141,7 +144,9 @@
     ;; midje
     (tabular 'defun)
     ;; jayq
-    (let-ajax 'defun)))
+    (let-ajax 'defun)
+    ;; schema
+    (s/defrecord 'defun)))
 
 (when (> emacs-major-version 23)
   (require 'package)
@@ -211,7 +216,6 @@
   (clojure-config)
   (add-hook 'c++-mode-hook (lambda () (smartparens-mode 1)))
   (add-hook 'c-mode-hook (lambda () (smartparens-mode 1)))
-  (setq ag-reuse-buffers 't)
   (require 'git-gutter-fringe)
   (require 'project-explorer)
   (autoload 'newlisp-mode "newlisp-mode" "Major mode for newLISP files." t)
