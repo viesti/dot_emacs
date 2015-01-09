@@ -149,7 +149,20 @@
     ;; jayq
     (let-ajax 'defun)
     ;; schema
-    (s/defrecord 'defun)))
+    (s/defrecord 'defun)
+    ;; om
+    (render-state 'defun)
+    (init-state 'defun)
+    (will-mount 'defun)
+    (did-mount 'defun)
+    (should-update 'defun)
+    (will-receive-props 'defun)
+    (will-update 'defun)
+    (did-update 'defun)
+    (render 'defun)
+    (render-state 'defun)
+    (display-name 'defun)
+    (will-unmount 'defun)))
 
 (when (> emacs-major-version 23)
   (require 'package)
