@@ -121,6 +121,7 @@
   (add-hook 'cider-repl-mode-hook 'company-mode)
   (add-hook 'cider-repl-mode-hook 'subword-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode)
+  (add-to-list 'auto-mode-alist '("\.cljc$" . clojure-mode))
 
   (setq nrepl-buffer-name-show-port t)
   (setq cider-prompt-save-file-on-load nil)
@@ -148,8 +149,6 @@
     (tabular 'defun)
     ;; jayq
     (let-ajax 'defun)
-    ;; schema
-    (s/defrecord 'defun)
     ;; om
     (render-state 'defun)
     (init-state 'defun)
@@ -162,7 +161,9 @@
     (render 'defun)
     (render-state 'defun)
     (display-name 'defun)
-    (will-unmount 'defun)))
+    (will-unmount 'defun)
+    ;; sablono
+    (html 'defun)))
 
 (when (> emacs-major-version 23)
   (require 'package)
@@ -202,7 +203,7 @@
   (require 'iedit)
   (require 'auto-complete-config)
   (ac-config-default)
-  (load-library "command-t")
+  (global-set-key (kbd "C-x f") 'find-file-in-repository)
   (global-set-key (kbd "M-z") 'er/expand-region)
   (delete-selection-mode 1)
   (global-set-key (kbd "<f5>") 'ag-project)
@@ -379,3 +380,13 @@
                             (local-set-key "\C-cb" 'js-send-buffer)
                             (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
                             (local-set-key "\C-cl" 'js-load-file-and-go)))
+
+(defun reloaded-reset ()
+  (interactive)
+  (save-some-buffers)
+  (with-current-buffer (cider-current-repl-buffer)
+    (cider-interactive-eval
+     "(reloaded.repl/reset)")))
+
+(define-key cider-mode-map (kbd "C-'") 'reloaded-reset)
+(define-key clojure-mode-map (kbd "C-'") 'reloaded-reset)
