@@ -62,7 +62,7 @@
  ;; If there is more than one, they won't work right.
  '(font-lock-keyword-face ((((class color) (min-colors 8)) (:foreground "magenta" :weight bold))))
  '(idle-highlight ((t (:underline t :weight bold))))
- '(magit-item-highlight ((t nil))))
+ '(magit-item-highlight ((t nil)) t))
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
@@ -121,10 +121,15 @@
   (add-hook 'cider-repl-mode-hook 'company-mode)
   (add-hook 'cider-repl-mode-hook 'subword-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode)
+  (add-hook 'cider-repl-mode-hook (lambda ()
+                                    (setq show-trailing-whitespace nil)))
   (add-to-list 'auto-mode-alist '("\.cljc$" . clojure-mode))
 
   (setq nrepl-buffer-name-show-port t)
   (setq cider-prompt-save-file-on-load nil)
+  (setq cider-show-error-buffer 'except-in-repl)
+  (setq cider-auto-select-error-buffer nil)
+  (setq cider-prompt-for-symbol nil)
   (define-clojure-indent
     ;; compojure
     (defroutes 'defun)
