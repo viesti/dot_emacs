@@ -3,9 +3,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-modes (quote (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode agda-mode agda2-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode ts-mode sclang-mode verilog-mode qml-mode)))
+ '(ac-modes
+   (quote
+    (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode agda-mode agda2-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode ts-mode sclang-mode verilog-mode qml-mode)))
  '(ag-highlight-search t)
- '(ag-reuse-buffers t)
+ '(ag-reuse-buffers nil)
  '(ag-reuse-window nil)
  '(auto-revert-interval 2)
  '(calendar-mark-diary-entries-flag t)
@@ -16,11 +18,14 @@
  '(cider-repl-history-file "~/.emacs.d/nrepl-history.log")
  '(cider-show-error-buffer t)
  '(column-number-mode t)
- '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
+ '(css-indent-offset 2)
+ '(custom-safe-themes
+   (quote
+    ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
  '(ecb-options-version "2.40")
  '(european-calendar-style t)
+ '(fill-column 120)
  '(ggtags-global-abbreviate-filename nil)
- '(git-commit-mode-hook (quote (turn-on-auto-fill)))
  '(global-auto-revert-mode t)
  '(global-font-lock-mode t nil (font-lock))
  '(gud-gdb-command-name "gdb --annotate=1")
@@ -61,8 +66,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(font-lock-keyword-face ((((class color) (min-colors 8)) (:foreground "magenta" :weight bold))))
- '(idle-highlight ((t (:underline t :weight bold))))
- '(magit-item-highlight ((t nil)) t))
+ '(idle-highlight ((t (:underline t :weight bold)))))
+
+;; '(magit-item-highlight ((t nil)) t)
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
@@ -121,10 +127,12 @@
   (add-hook 'cider-repl-mode-hook 'company-mode)
   (add-hook 'cider-repl-mode-hook 'subword-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode)
-  (add-hook 'cider-repl-mode-hook (lambda ()
-                                    (setq show-trailing-whitespace nil)))
+  (add-hook 'cider-repl-mode-hook (lambda ()(setq show-trailing-whitespace nil)))
+  ;(add-hook 'cider-mode-hook 'cider-profile-mode)
+  ;(add-hook 'cider-repl-mode-hook 'cider-profile-mode)
   (add-to-list 'auto-mode-alist '("\.cljc$" . clojure-mode))
 
+  (add-hook 'shell-mode (lambda () (setq show-trailing-whitespace nil)))
   (setq nrepl-buffer-name-show-port t)
   (setq cider-prompt-save-file-on-load nil)
   (setq cider-show-error-buffer 'except-in-repl)
@@ -395,3 +403,5 @@
 
 (define-key cider-mode-map (kbd "C-'") 'reloaded-reset)
 (define-key clojure-mode-map (kbd "C-'") 'reloaded-reset)
+
+(setq magit-last-seen-setup-instructions "1.4.0")
