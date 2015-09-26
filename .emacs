@@ -138,6 +138,7 @@
   (setq cider-show-error-buffer 'except-in-repl)
   (setq cider-auto-select-error-buffer nil)
   (setq cider-prompt-for-symbol nil)
+  (eval-after-load 'flycheck '(flycheck-clojure-setup))
   (define-clojure-indent
     ;; compojure
     (defroutes 'defun)
