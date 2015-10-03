@@ -186,8 +186,7 @@
                '("marmalade" . "http://marmalade-repo.org/packages/")
                'APPEND)
   (add-to-list 'package-archives
-               '("melpa" . "http://melpa.milkbox.net/packages/")
-               'APPEND)
+               '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize)
