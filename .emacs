@@ -68,8 +68,6 @@
  '(font-lock-keyword-face ((((class color) (min-colors 8)) (:foreground "magenta" :weight bold))))
  '(idle-highlight ((t (:underline t :weight bold)))))
 
-;; '(magit-item-highlight ((t nil)) t)
-
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
@@ -127,7 +125,7 @@
   (add-hook 'cider-repl-mode-hook 'company-mode)
   (add-hook 'cider-repl-mode-hook 'subword-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode)
-  (add-hook 'cider-repl-mode-hook (lambda ()(setq show-trailing-whitespace nil)))
+  (add-hook 'cider-repl-mode-hook (lambda () (setq show-trailing-whitespace nil)))
   ;(add-hook 'cider-mode-hook 'cider-profile-mode)
   ;(add-hook 'cider-repl-mode-hook 'cider-profile-mode)
   (add-to-list 'auto-mode-alist '("\.cljc$" . clojure-mode))
@@ -241,9 +239,9 @@
               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
                 (ggtags-mode 1))))
   (add-hook 'js2-mode 'linum-mode)
-  (require 'smartparens-config)
   (require 'rainbow-delimiters)
   (clojure-config)
+  (require 'smartparens-config)
   (add-hook 'c++-mode-hook (lambda () (smartparens-mode 1)))
   (add-hook 'c-mode-hook (lambda () (smartparens-mode 1)))
   (require 'git-gutter-fringe)
