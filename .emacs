@@ -131,6 +131,7 @@
   (add-to-list 'auto-mode-alist '("\.cljc$" . clojure-mode))
 
   (add-hook 'shell-mode (lambda () (setq show-trailing-whitespace nil)))
+  (add-hook 'inferior-python-mode (lambda () (setq show-trailing-whitespace nil)))
   (setq nrepl-buffer-name-show-port t)
   (setq cider-prompt-save-file-on-load nil)
   (setq cider-show-error-buffer 'except-in-repl)
