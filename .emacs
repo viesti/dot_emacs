@@ -195,6 +195,9 @@
   (setq ring-bell-function #'ignore)
   (require 'switch-window)
 
+  (require 'highlight-symbol)
+  (global-set-key [(shift f3)] 'highlight-symbol-next)
+  (global-set-key [(meta f3)] 'highlight-symbol-prev)
   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
   (add-hook 'newlisp-mode-hook 'paredit-mode)
   (add-hook 'comint-mode-hook (lambda ()
