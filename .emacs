@@ -402,3 +402,8 @@
 (define-key clojure-mode-map (kbd "C-'") 'reloaded-reset)
 
 (setq magit-last-seen-setup-instructions "1.4.0")
+
+(electric-indent-mode +1)
+
+;(global-set-key (kbd "RET") 'newline-and-indent)
+
