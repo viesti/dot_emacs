@@ -1,3 +1,13 @@
+(require 'package)
+(package-initialize)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/")
+             'APPEND)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
+(mapc 'package-install '(ac-ispell auto-complete popup ace-jump-mode ag s dash anyins buffer-move cedit cider-browse-ns cider queue pkg-info epl dash clojure-mode cider-decompile javap-mode cider queue pkg-info epl dash clojure-mode cider-eval-sexp-fu eval-sexp-fu highlight highlight cider-spy dash cider queue pkg-info epl dash clojure-mode cider-tracing clojure-mode cider queue pkg-info epl dash clojure-mode clj-refactor edn s peg dash cider queue pkg-info epl dash clojure-mode multiple-cursors paredit yasnippet dash s cljdoc clojure-cheatsheet cider queue pkg-info epl dash clojure-mode helm helm-core async async clojure-mode-extra-font-locking clojure-mode clojure-project-mode project-mode levenshtein clojurescript-mode color-theme-github color-theme color-theme-solarized color-theme command-t popwin find-file-in-project cycbuf ecb edn s peg dash ensime s dash auto-complete popup company yasnippet popup sbt-mode scala-mode2 scala-mode2 epoch-view etags-select etags-table eval-sexp-fu highlight exec-path-from-shell expand-region find-file-in-repository flx-ido flx flymake-jshint flymake-easy free-keys ggtags git-blame git-gutter-fringe fringe-helper git-gutter gitconfig gtags guile-scheme helm helm-core async async helm-cmd-t helm-core async highlight highlight-parentheses highlight-symbol hy-mode hydra icicles iedit isearch+ javap-mode jedi-direx direx jedi auto-complete popup jedi-core python-environment deferred epc ctable concurrent deferred js-comint js2-closure js2-mode js2-refactor yasnippet s dash multiple-cursors s js2-mode js3-mode json-mode json-snatcher json-reformat json-reformat json-snatcher jsx-mode jump-char latest-clojure-libraries less-css-mode lua-mode magit-find-file dash magit magit-popup dash async git-commit with-editor dash async dash with-editor dash async dash async markdown-mode midje-mode clojure-mode cider queue pkg-info epl dash clojure-mode midje-test-mode cider queue pkg-info epl dash clojure-mode clojure-mode multiple-cursors newlisp-mode nginx-mode nlinum nose-mode nose occur-context-resize peg php-mode popup popwin project-explorer es-windows es-lib project-mode levenshtein python-environment deferred rainbow-delimiters request s sbt-mode scala-mode2 scala-mode2 slamhound smartparens dash spinner sr-speedbar starter-kit-bindings starter-kit magit magit-popup dash async git-commit with-editor dash async dash with-editor dash async dash async ido-ubiquitous ido-completing-read+ smex find-file-in-project idle-highlight-mode paredit starter-kit-eshell starter-kit-lisp elisp-slime-nav starter-kit magit magit-popup dash async git-commit with-editor dash async dash with-editor dash async dash async ido-ubiquitous ido-completing-read+ smex find-file-in-project idle-highlight-mode paredit typed-clojure-mode cider queue pkg-info epl dash clojure-mode clojure-mode web-beautify wgrep-ag wgrep with-editor dash async writegood-mode yaml-mode yasnippet))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -71,12 +81,10 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-;; Delete whole line
 (defun delete-whole-line ()
   (interactive)
   (beginning-of-line)
   (kill-line))
-;; Delete also \n
 (setq kill-whole-line t)
 ;; Replace forward-delete-char with kill-whole-line
 (global-set-key (kbd "C-d") 'delete-whole-line)
@@ -109,6 +117,8 @@
 (add-to-list 'load-path "/Users/kimmoko/.cabal/share/x86_64-osx-ghc-7.8.3/ghc-mod-5.1.1.0")
 (autoload 'ghc-init "ghc" nil t)
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+(add-hook 'haskell-mode-hook 'haskell-indent-mode)
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
 (defun clojure-config ()
   "Clojure configuration"
@@ -138,6 +148,14 @@
   (setq cider-auto-select-error-buffer nil)
   (setq cider-prompt-for-symbol nil)
   (eval-after-load 'flycheck '(flycheck-clojure-setup))
+  (let ((reloaded-reset (lambda ()
+                          (interactive)
+                          (save-some-buffers)
+                          (with-current-buffer (cider-current-repl-buffer)
+                            (cider-interactive-eval
+                             "(reloaded.repl/reset)")))))
+      (define-key cider-mode-map (kbd "C-'") reloaded-reset)
+      (define-key clojure-mode-map (kbd "C-'") reloaded-reset))
   (define-clojure-indent
     ;; compojure
     (defroutes 'defun)
@@ -178,84 +196,73 @@
     ;; sablono
     (html 'defun)))
 
-(when (> emacs-major-version 23)
-  (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives
-               '("marmalade" . "http://marmalade-repo.org/packages/")
-               'APPEND)
-  (add-to-list 'package-archives
-               '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "JAVA_HOME"))
+(when window-system
+  (load-theme 'deeper-blue t))
+(setq ring-bell-function #'ignore)
 
-  (when (memq window-system '(mac ns))
-    (exec-path-from-shell-initialize)
-    (exec-path-from-shell-copy-env "JAVA_HOME"))
-  (when window-system
-    (load-theme 'deeper-blue t))
-  (setq ring-bell-function #'ignore)
-  (require 'switch-window)
+(require 'highlight-symbol)
+(global-set-key [(shift f3)] 'highlight-symbol-next)
+(global-set-key [(meta f3)] 'highlight-symbol-prev)
 
-  (require 'highlight-symbol)
-  (global-set-key [(shift f3)] 'highlight-symbol-next)
-  (global-set-key [(meta f3)] 'highlight-symbol-prev)
-  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-  (add-hook 'newlisp-mode-hook 'paredit-mode)
-  (add-hook 'comint-mode-hook (lambda ()
-                                (when (equal (buffer-name) "*newlisp*")
-                                  (paredit-mode 1))))
-  (add-hook 'python-mode-hook 'linum-mode)
-  (add-hook 'c++-mode-hook 'linum-mode)
-  (add-hook 'c-mode-hook 'linum-mode)
-  (add-hook 'js-mode-hook 'linum-mode)
-  (add-hook 'js2-mode-hook 'linum-mode)
-  (require 'flymake-jshint)
-  (add-hook 'js-mode-hook 'flymake-mode)
-  (require 'iedit)
-  (require 'auto-complete-config)
-  (ac-config-default)
-  (global-set-key (kbd "C-x f") 'find-file-in-repository)
-  (global-set-key (kbd "M-z") 'er/expand-region)
-  (delete-selection-mode 1)
-  (global-set-key (kbd "<f5>") 'ag-project)
-  (global-set-key (kbd "<f6>") 'ag-regexp-project-at-point)
-  (menu-bar-mode 1)
-  (require 'sr-speedbar)
-  (global-set-key (kbd "s-b") 'sr-speedbar-toggle)
-  (global-set-key (kbd "<C-s-up>")     'buf-move-up)
-  (global-set-key (kbd "<C-s-down>")   'buf-move-down)
-  (global-set-key (kbd "<C-s-left>")   'buf-move-left)
-  (global-set-key (kbd "<C-s-right>")  'buf-move-right)
-  (setq mouse-wheel-progressive-speed nil)
-  (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-  (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-  (global-set-key (kbd "S-C-<down>") 'shrink-window)
-  (global-set-key (kbd "S-C-<up>") 'enlarge-window)
-  (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-  (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-  (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-                (ggtags-mode 1))))
-  (add-hook 'js2-mode 'linum-mode)
-  (require 'rainbow-delimiters)
-  (clojure-config)
-  (require 'smartparens-config)
-  (add-hook 'c++-mode-hook (lambda () (smartparens-mode 1)))
-  (add-hook 'c-mode-hook (lambda () (smartparens-mode 1)))
-  (require 'git-gutter-fringe)
-  (require 'project-explorer)
-  (autoload 'newlisp-mode "newlisp-mode" "Major mode for newLISP files." t)
-  (add-to-list 'auto-mode-alist '("\\.lsp$" . newlisp-mode))
-  (add-to-list 'interpreter-mode-alist '("newlisp" . newlisp-mode))
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (setq jedi:setup-keys t)
-  (setq jedi:complete-on-dot t)
-  (require 'ensime)
-  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
-  (add-hook 'haskell-mode-hook 'haskell-indent-mode)
-  (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-  (require 'highlight-parentheses))
+(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'newlisp-mode-hook 'paredit-mode)
+(add-hook 'comint-mode-hook (lambda ()
+                              (when (equal (buffer-name) "*newlisp*")
+                                (paredit-mode 1))))
+(add-hook 'python-mode-hook 'linum-mode)
+(add-hook 'c++-mode-hook 'linum-mode)
+(add-hook 'c-mode-hook 'linum-mode)
+(add-hook 'js-mode-hook 'linum-mode)
+(add-hook 'js2-mode-hook 'linum-mode)
+(require 'flymake-jshint)
+(add-hook 'js-mode-hook 'flymake-mode)
+(require 'iedit)
+(require 'auto-complete-config)
+(ac-config-default)
+(global-set-key (kbd "C-x f") 'find-file-in-repository)
+(global-set-key (kbd "M-z") 'er/expand-region)
+(delete-selection-mode 1)
+(global-set-key (kbd "<f5>") 'ag-project)
+(global-set-key (kbd "<f6>") 'ag-regexp-project-at-point)
+(menu-bar-mode 1)
+(require 'sr-speedbar)
+(global-set-key (kbd "s-b") 'sr-speedbar-toggle)
+(global-set-key (kbd "<C-s-up>")     'buf-move-up)
+(global-set-key (kbd "<C-s-down>")   'buf-move-down)
+(global-set-key (kbd "<C-s-left>")   'buf-move-left)
+(global-set-key (kbd "<C-s-right>")  'buf-move-right)
+(setq mouse-wheel-progressive-speed nil)
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<down>") 'shrink-window)
+(global-set-key (kbd "S-C-<up>") 'enlarge-window)
+(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+              (ggtags-mode 1))))
+(add-hook 'js2-mode 'linum-mode)
+(require 'rainbow-delimiters)
+(clojure-config)
+(require 'smartparens-config)
+(add-hook 'c++-mode-hook (lambda () (smartparens-mode 1)))
+(add-hook 'c-mode-hook (lambda () (smartparens-mode 1)))
+(require 'git-gutter-fringe)
+(require 'project-explorer)
+(autoload 'newlisp-mode "newlisp-mode" "Major mode for newLISP files." t)
+(add-to-list 'auto-mode-alist '("\\.lsp$" . newlisp-mode))
+(add-to-list 'interpreter-mode-alist '("newlisp" . newlisp-mode))
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:setup-keys t)
+(setq jedi:complete-on-dot t)
+(require 'ensime)
+(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+(require 'highlight-parentheses)
 
 (setq ispell-program-name "aspell"
       ispell-dictionary "finnish"
@@ -283,98 +290,6 @@
 (put 'narrow-to-region 'disabled nil)
 (server-mode 1)
 
-;; handle tmux's xterm-keys
-;; put the following line in your ~/.tmux.conf:
-;;   setw -g xterm-keys on
-(if (getenv "TMUX")
-    (progn
-      (let ((x 2) (tkey ""))
-        (while (<= x 8)
-          ;; shift
-          (if (= x 2)
-              (setq tkey "S-"))
-          ;; alt
-          (if (= x 3)
-              (setq tkey "M-"))
-          ;; alt + shift
-          (if (= x 4)
-              (setq tkey "M-S-"))
-          ;; ctrl
-          (if (= x 5)
-              (setq tkey "C-"))
-          ;; ctrl + shift
-          (if (= x 6)
-              (setq tkey "C-S-"))
-          ;; ctrl + alt
-          (if (= x 7)
-              (setq tkey "C-M-"))
-          ;; ctrl + alt + shift
-          ;; (if (= x 8)
-          ;;        (setq tkey "C-M-S-"))
-          ;; super
-          (if (= x 8)
-              (setq tkey "s-"))
-
-          ;; arrows
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d A" x)) (kbd (format "%s<up>" tkey)))
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d B" x)) (kbd (format "%s<down>" tkey)))
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d C" x)) (kbd (format "%s<right>" tkey)))
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d D" x)) (kbd (format "%s<left>" tkey)))
-          ;; home
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d H" x)) (kbd (format "%s<home>" tkey)))
-          ;; end
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d F" x)) (kbd (format "%s<end>" tkey)))
-          ;; page up
-          (define-key key-translation-map (kbd (format "M-[ 5 ; %d ~" x)) (kbd (format "%s<prior>" tkey)))
-          ;; page down
-          (define-key key-translation-map (kbd (format "M-[ 6 ; %d ~" x)) (kbd (format "%s<next>" tkey)))
-          ;; insert
-          (define-key key-translation-map (kbd (format "M-[ 2 ; %d ~" x)) (kbd (format "%s<delete>" tkey)))
-          ;; delete
-          (define-key key-translation-map (kbd (format "M-[ 3 ; %d ~" x)) (kbd (format "%s<delete>" tkey)))
-          ;; f1
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d P" x)) (kbd (format "%s<f1>" tkey)))
-          ;; f2
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d Q" x)) (kbd (format "%s<f2>" tkey)))
-          ;; f3
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d R" x)) (kbd (format "%s<f3>" tkey)))
-          ;; f4
-          (define-key key-translation-map (kbd (format "M-[ 1 ; %d S" x)) (kbd (format "%s<f4>" tkey)))
-          ;; f5
-          (define-key key-translation-map (kbd (format "M-[ 15 ; %d ~" x)) (kbd (format "%s<f5>" tkey)))
-          ;; f6
-          (define-key key-translation-map (kbd (format "M-[ 17 ; %d ~" x)) (kbd (format "%s<f6>" tkey)))
-          ;; f7
-          (define-key key-translation-map (kbd (format "M-[ 18 ; %d ~" x)) (kbd (format "%s<f7>" tkey)))
-          ;; f8
-          (define-key key-translation-map (kbd (format "M-[ 19 ; %d ~" x)) (kbd (format "%s<f8>" tkey)))
-          ;; f9
-          (define-key key-translation-map (kbd (format "M-[ 20 ; %d ~" x)) (kbd (format "%s<f9>" tkey)))
-          ;; f10
-          (define-key key-translation-map (kbd (format "M-[ 21 ; %d ~" x)) (kbd (format "%s<f10>" tkey)))
-          ;; f11
-          (define-key key-translation-map (kbd (format "M-[ 23 ; %d ~" x)) (kbd (format "%s<f11>" tkey)))
-          ;; f12
-          (define-key key-translation-map (kbd (format "M-[ 24 ; %d ~" x)) (kbd (format "%s<f12>" tkey)))
-          ;; f13
-          (define-key key-translation-map (kbd (format "M-[ 25 ; %d ~" x)) (kbd (format "%s<f13>" tkey)))
-          ;; f14
-          (define-key key-translation-map (kbd (format "M-[ 26 ; %d ~" x)) (kbd (format "%s<f14>" tkey)))
-          ;; f15
-          (define-key key-translation-map (kbd (format "M-[ 28 ; %d ~" x)) (kbd (format "%s<f15>" tkey)))
-          ;; f16
-          (define-key key-translation-map (kbd (format "M-[ 29 ; %d ~" x)) (kbd (format "%s<f16>" tkey)))
-          ;; f17
-          (define-key key-translation-map (kbd (format "M-[ 31 ; %d ~" x)) (kbd (format "%s<f17>" tkey)))
-          ;; f18
-          (define-key key-translation-map (kbd (format "M-[ 32 ; %d ~" x)) (kbd (format "%s<f18>" tkey)))
-          ;; f19
-          (define-key key-translation-map (kbd (format "M-[ 33 ; %d ~" x)) (kbd (format "%s<f19>" tkey)))
-          ;; f20
-          (define-key key-translation-map (kbd (format "M-[ 34 ; %d ~" x)) (kbd (format "%s<f20>" tkey)))
-
-          (setq x (+ x 1))))))
-
 (defadvice yes-or-no-p (around prevent-dialog activate)
   "Prevent yes-or-no-p from activating a dialog"
   (let ((use-dialog-box nil))
@@ -384,22 +299,13 @@
   (let ((use-dialog-box nil))
     ad-do-it))
 
-(add-hook 'js2-mode-hook '(lambda ()
-                            (local-set-key "\C-x\C-e" 'js-send-last-sexp)
-                            (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
-                            (local-set-key "\C-cb" 'js-send-buffer)
-                            (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
-                            (local-set-key "\C-cl" 'js-load-file-and-go)))
-
-(defun reloaded-reset ()
-  (interactive)
-  (save-some-buffers)
-  (with-current-buffer (cider-current-repl-buffer)
-    (cider-interactive-eval
-     "(reloaded.repl/reset)")))
-
-(define-key cider-mode-map (kbd "C-'") 'reloaded-reset)
-(define-key clojure-mode-map (kbd "C-'") 'reloaded-reset)
+(add-hook 'js2-mode-hook
+          '(lambda ()
+             (local-set-key "\C-x\C-e" 'js-send-last-sexp)
+             (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
+             (local-set-key "\C-cb" 'js-send-buffer)
+             (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
+             (local-set-key "\C-cl" 'js-load-file-and-go)))
 
 (setq magit-last-seen-setup-instructions "1.4.0")
 
