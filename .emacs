@@ -194,7 +194,9 @@
     (display-name 'defun)
     (will-unmount 'defun)
     ;; sablono
-    (html 'defun)))
+    (html 'defun)
+    ;; cljs.test
+    (async 'defun)))
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
