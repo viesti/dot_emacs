@@ -196,7 +196,17 @@
     ;; sablono
     (html 'defun)
     ;; cljs.test
-    (async 'defun)))
+    (async 'defun)
+    ;; Riemann
+    (streams 'defun)
+    (where 'defun)
+    (changed-state 'defun)
+    (expired 'defun)
+    (rollup 'defun)
+    (changed 'defun)
+    (by 'defun)
+    (rate 'defun)
+    (with 'defun)))
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
