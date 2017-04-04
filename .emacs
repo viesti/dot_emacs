@@ -1,12 +1,15 @@
 (require 'package)
-(package-initialize)
 (add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/")
-             'APPEND)
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-
-(mapc 'package-install '(ac-ispell auto-complete popup ace-jump-mode ag s dash anyins buffer-move cedit cider-browse-ns cider queue pkg-info epl dash clojure-mode cider-decompile javap-mode cider queue pkg-info epl dash clojure-mode cider-eval-sexp-fu eval-sexp-fu highlight highlight cider-spy dash cider queue pkg-info epl dash clojure-mode cider-tracing clojure-mode cider queue pkg-info epl dash clojure-mode clj-refactor edn s peg dash cider queue pkg-info epl dash clojure-mode multiple-cursors paredit yasnippet dash s cljdoc clojure-cheatsheet cider queue pkg-info epl dash clojure-mode helm helm-core async async clojure-mode-extra-font-locking clojure-mode clojure-project-mode project-mode levenshtein clojurescript-mode color-theme-github color-theme color-theme-solarized color-theme command-t popwin find-file-in-project cycbuf ecb edn s peg dash ensime s dash auto-complete popup company yasnippet popup sbt-mode scala-mode2 scala-mode2 epoch-view etags-select etags-table eval-sexp-fu highlight exec-path-from-shell expand-region find-file-in-repository flx-ido flx flymake-jshint flymake-easy free-keys ggtags git-blame git-gutter-fringe fringe-helper git-gutter gitconfig gtags guile-scheme helm helm-core async async helm-cmd-t helm-core async highlight highlight-parentheses highlight-symbol hy-mode hydra icicles iedit isearch+ javap-mode jedi-direx direx jedi auto-complete popup jedi-core python-environment deferred epc ctable concurrent deferred js-comint js2-closure js2-mode js2-refactor yasnippet s dash multiple-cursors s js2-mode js3-mode json-mode json-snatcher json-reformat json-reformat json-snatcher jsx-mode jump-char latest-clojure-libraries less-css-mode lua-mode magit-find-file dash magit magit-popup dash async git-commit with-editor dash async dash with-editor dash async dash async markdown-mode midje-mode clojure-mode cider queue pkg-info epl dash clojure-mode midje-test-mode cider queue pkg-info epl dash clojure-mode clojure-mode multiple-cursors newlisp-mode nginx-mode nlinum nose-mode nose occur-context-resize peg php-mode popup popwin project-explorer es-windows es-lib project-mode levenshtein python-environment deferred rainbow-delimiters request s sbt-mode scala-mode2 scala-mode2 slamhound smartparens dash spinner sr-speedbar starter-kit-bindings starter-kit magit magit-popup dash async git-commit with-editor dash async dash with-editor dash async dash async ido-ubiquitous ido-completing-read+ smex find-file-in-project idle-highlight-mode paredit starter-kit-eshell starter-kit-lisp elisp-slime-nav starter-kit magit magit-popup dash async git-commit with-editor dash async dash with-editor dash async dash async ido-ubiquitous ido-completing-read+ smex find-file-in-project idle-highlight-mode paredit typed-clojure-mode cider queue pkg-info epl dash clojure-mode clojure-mode web-beautify wgrep-ag wgrep with-editor dash async writegood-mode yaml-mode yasnippet))
+'(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+(add-to-list 'load-path "~/.emacs.d/monroe/")
+(when (file-exists-p "~/.emacs.d/refresh-packages-on-start")
+  (package-refresh-contents))
+(mapc 'package-install '(ac-ispell ace-jump-mode ag anyins async auto-complete buffer-move cedit cider clj-refactor cljdoc clojure-cheatsheet clojure-mode clojure-mode-extra-font-locking clojure-project-mode clojurescript-mode color-theme color-theme-github color-theme-solarized command-t company concurrent ctable cycbuf dash deferred direx ecb edn elisp-slime-nav ensime epc epl epoch-view es-lib es-windows etags-select etags-table eval-sexp-fu exec-path-from-shell expand-region find-file-in-project find-file-in-repository flx flx-ido flymake-easy flymake-jshint free-keys fringe-helper ggtags git-blame git-commit git-gutter git-gutter-fringe gitconfig gtags guile-scheme helm helm-cmd-t helm-core highlight highlight-parentheses highlight-symbol hy-mode hydra icicles idle-highlight-mode ido-completing-read+ ido-ubiquitous iedit isearch+ javap-mode jedi jedi-core jedi-direx js-comint js2-closure js2-mode js2-refactor js3-mode json-mode json-reformat json-snatcher jsx-mode jump-char latest-clojure-libraries less-css-mode levenshtein lua-mode magit magit-find-file magit-popup markdown-mode midje-mode midje-test-mode multiple-cursors newlisp-mode nginx-mode nlinum nose nose-mode occur-context-resize paredit peg php-mode pkg-info popup popwin project-explorer project-mode python-environment queue rainbow-delimiters request s sbt-mode scala-mode2 slamhound smartparens smex spinner sr-speedbar starter-kit starter-kit-bindings starter-kit-eshell starter-kit-lisp typed-clojure-mode web-beautify wgrep wgrep-ag with-editor writegood-mode yaml-mode yasnippet))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -58,6 +61,13 @@
  '(ns-right-command-modifier (quote left))
  '(number-of-diary-entries 3)
  '(python-shell-interpreter "python")
+ '(safe-local-variable-values
+   (quote
+    ((cider-cljs-lein-repl . "(do (dev) (go) (cljs-repl))")
+     (cider-refresh-after-fn . "reloaded.repl/resume")
+     (cider-refresh-before-fn . "reloaded.repl/suspend")
+     (whitespace-line-column . 80)
+     (lexical-binding . t))))
  '(scroll-bar-mode (quote right))
  '(shift-select-mode t)
  '(show-paren-mode t)
@@ -68,15 +78,18 @@
  '(tab-width 4)
  '(tool-bar-mode nil)
  '(transient-mark-mode t)
- '(view-diary-entries-initially t))
+ '(view-diary-entries-initially t)
+ '(web-mode-code-indent-offset 2)
+ '(web-mode-css-indent-offset 2)
+ '(web-mode-markup-indent-offset 2)
+ '(web-mode-sql-indent-offset 2))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(font-lock-keyword-face ((((class color) (min-colors 8)) (:foreground "magenta" :weight bold))))
- '(idle-highlight ((t (:underline t :weight bold)))))
+ '(font-lock-keyword-face ((((class color) (min-colors 8)) (:foreground "magenta" :weight bold)))))
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
@@ -124,17 +137,22 @@
   "Clojure configuration"
   (require 'clojure-mode)
   (require 'clj-refactor)
+  (require 'monroe)
+  (add-hook 'clojure-mode-hook 'clojure-enable-monroe)
+  (setq cider-font-lock-dynamically '(macro core function var))
   (add-hook 'clojure-mode-hook (lambda ()
-                                 (clj-refactor-mode 1)
+                                 ;(clj-refactor-mode 1)
+                                 (yas-minor-mode 1)
                                  (cljr-add-keybindings-with-prefix "C-c C-m")))
   (add-hook 'clojure-mode-hook 'linum-mode)
-  (add-hook 'cider-mode-hook 'company-mode)
-  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+  (add-hook 'cider-mode-hook #'company-mode)
+  (add-hook 'cider-mode-hook #'eldoc-mode)
+  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (add-hook 'cider-mode-hook 'highlight-parentheses-mode)
   (add-hook 'cider-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'cider-repl-mode-hook 'company-mode)
-  (add-hook 'cider-repl-mode-hook 'subword-mode)
-  (add-hook 'cider-repl-mode-hook 'paredit-mode)
+  (add-hook 'cider-repl-mode-hook #'company-mode)
+  (add-hook 'cider-repl-mode-hook #'subword-mode)
+  (add-hook 'cider-repl-mode-hook #'paredit-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (setq show-trailing-whitespace nil)))
   ;(add-hook 'cider-mode-hook 'cider-profile-mode)
   ;(add-hook 'cider-repl-mode-hook 'cider-profile-mode)
@@ -148,14 +166,15 @@
   (setq cider-auto-select-error-buffer nil)
   (setq cider-prompt-for-symbol nil)
   (eval-after-load 'flycheck '(flycheck-clojure-setup))
-  (let ((reloaded-reset (lambda ()
-                          (interactive)
-                          (save-some-buffers)
-                          (with-current-buffer (cider-current-repl-buffer)
-                            (cider-interactive-eval
-                             "(reloaded.repl/reset)")))))
+  (eval-after-load 'cider
+    '(let ((reloaded-reset (lambda ()
+                            (interactive)
+                            (save-some-buffers)
+                            (with-current-buffer (cider-current-repl-buffer)
+                              (cider-interactive-eval
+                               "(reloaded.repl/reset)")))))
       (define-key cider-mode-map (kbd "C-'") reloaded-reset)
-      (define-key clojure-mode-map (kbd "C-'") reloaded-reset))
+      (define-key clojure-mode-map (kbd "C-'") reloaded-reset)))
   (define-clojure-indent
     ;; compojure
     (defroutes 'defun)
@@ -169,13 +188,6 @@
     ;; compojure-api
     (GET* 2)
     (POST* 2)
-    ;; litmus
-    (describe 'defun)
-    (given 'defun)
-    (then 'defun)
-    (before 'defun)
-    (before! 'defun)
-    (after 'defun)
     ;; midje
     (tabular 'defun)
     ;; jayq
@@ -206,7 +218,11 @@
     (changed 'defun)
     (by 'defun)
     (rate 'defun)
-    (with 'defun)))
+    (with 'defun)
+    (timing 'defun)
+    ;; core.match
+    (match 'defun)
+    (with-additional-middleware 'defun)))
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
@@ -231,6 +247,8 @@
 (add-hook 'js2-mode-hook 'linum-mode)
 (require 'flymake-jshint)
 (add-hook 'js-mode-hook 'flymake-mode)
+(require 'flymake-json)
+(add-hook 'json-mode 'flymake-json-load)
 (require 'iedit)
 (require 'auto-complete-config)
 (ac-config-default)
