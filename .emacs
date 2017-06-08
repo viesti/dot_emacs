@@ -141,8 +141,8 @@
   "Clojure configuration"
   (require 'clojure-mode)
   (require 'clj-refactor)
-  (require 'monroe)
-  (add-hook 'clojure-mode-hook 'clojure-enable-monroe)
+  ;(require 'monroe)
+  ;(add-hook 'clojure-mode-hook 'clojure-enable-monroe)
   (setq cider-font-lock-dynamically '(macro core function var))
   (add-hook 'clojure-mode-hook (lambda ()
                                  ;(clj-refactor-mode 1)
